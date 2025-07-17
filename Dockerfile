@@ -1,0 +1,39 @@
+ARG OS_VERSION=24.04
+FROM ubuntu:${OS_VERSION}
+LABEL maintainer="Fubin Zhang <zfb132@gmail.com>" \
+    description="CCStudio Docker Image"
+
+# CCStudio version
+ARG CCS_VERSION="20.2.0.00012"
+# components to install (comma-separated, use PF_ALL for all)
+ARG CCS_COMPONENTS="PF_ALL"
+# mmWave SDK version (empty to skip)
+ARG MMWSDK_VERSION="03.06.02.00-LTS"
+# mmWave SDK components (comma-separated, use ALL for all, empty to skip)
+ARG MMWSDK_COMPONENTS="ALL"
+# SYS/BIOS version (empty to skip, note: already included in mmWave SDK)
+# e.g. 6.73.01.01
+ARG BIOS_VERSION=""
+ARG DEBIAN_FRONTEND=noninteractive
+
+# default installation paths for TI tools (CCStudio, MMWave SDK, SYS/BIOS)
+ENV CCS_DIR="/opt/ti"
+# default workspace directory for CCStudio in container
+ENV WORKSPACE_DIR="/workspaces"
+# default language and timezone
+# timezone can be changed when running the container with -e TZ=...
+ENV LANG=en_US.UTF-8 TZ=UTC
+
+COPY configure.sh entrypoint.sh /
+RUN chmod +x /*.sh
+
+RUN /configure.sh install_base
+RUN /configure.sh install_ccs
+RUN /configure.sh install_mmwave_sdk
+RUN /configure.sh install_sys_bios
+RUN /configure.sh init_ccs && /configure.sh clean
+
+WORKDIR ${WORKSPACE_DIR}
+ENV PATH="${CCS_DIR}/ccs/eclipse/:${PATH}"
+
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
