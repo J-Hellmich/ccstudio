@@ -1,8 +1,11 @@
 ## CCStudio
-Check out the [Chinese version 中文简体](https://github.com/zfb132/ccstudio/blob/main/README_zh-CN.md)
+Check out the [Chinese version 中文简体](https://github.com/zfb132/ccstudio/blob/main/README_zh-CN.md)  
 
-### Software Configuration
+Docker images are available on:  
+* [Dockerhub: whuzfb/ccstudio](https://hub.docker.com/r/whuzfb/ccstudio)
+* [GHCR: zfb132/ccstudio](https://github.com/zfb132/ccstudio/pkgs/container/ccstudio)
 
+### Software Configuration  
 1. **Supported CCStudio versions**:
    - 10.x (tested versions `10.0.0.00010`, `10.4.0.00006`)
    - 11.x (tested versions `11.0.0.00012`, `11.2.0.00007`)
@@ -19,12 +22,12 @@ Important directories in the container:
 - `/workspaces`: CCStudio workspace directory (the container's CCS workspace directory is `/workspaces`, also used for storing build results)
 - `/opt/ti`: Installation directory for TI products (CCStudio, mmWave SDK, SYS/BIOS are installed here)
 
-#### Linux Installation Guides by Version
+Linux installation guides by version
 - [CCS Linux Host Support](https://software-dl.ti.com/ccs/esd/documents/ccs_linux_host_support.html)  
 - [CCS Linux Host Support v12](https://software-dl.ti.com/ccs/esd/documents/ccsv12_linux_host_support.html)  
 - [CCS Installation Guide v20](https://software-dl.ti.com/ccs/esd/documents/users_guide/ccs_installation.html)  
 
-#### Command-Line Interface Documentation
+Command-line interface documentation
 - [CCS Command Line Interface (v12 and below)](https://software-dl.ti.com/ccs/esd/documents/ccs_projects-command-line.html)  
 - [CCS Command Line Interface (v20 and above)](https://software-dl.ti.com/ccs/esd/documents/users_guide/ccs_project-command-line.html)  
 

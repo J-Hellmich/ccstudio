@@ -1,7 +1,9 @@
 ARG OS_VERSION=24.04
 FROM ubuntu:${OS_VERSION}
-LABEL maintainer="Fubin Zhang <zfb132@gmail.com>" \
-    description="CCStudio Docker Image"
+LABEL org.opencontainers.image.authors="Fubin Zhang <zfb132@gmail.com>" \
+      org.opencontainers.image.source="https://github.com/zfb132/ccstudio" \
+      org.opencontainers.image.url="https://github.com/zfb132/ccstudio" \
+      org.opencontainers.image.description="CCStudio Docker Image"
 
 # CCStudio version
 ARG CCS_VERSION="20.2.0.00012"

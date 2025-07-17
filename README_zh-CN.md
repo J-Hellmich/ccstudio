@@ -1,5 +1,9 @@
 ## CCStudio
-软件配置情况：  
+Docker镜像可在以下位置获取：  
+* [Dockerhub: whuzfb/ccstudio](https://hub.docker.com/r/whuzfb/ccstudio)
+* [GHCR: zfb132/ccstudio](https://github.com/zfb132/ccstudio/pkgs/container/ccstudio)
+
+### 软件配置情况：  
 1. 该仓库目前理论上支持的[CCStudio](https://www.ti.com/tool/CCSTUDIO)版本：  
   * 10.x（已测试版本`10.0.0.00010`、`10.4.0.00006`）
   * 11.x（已测试版本`11.0.0.00012`、`11.2.0.00007`）
