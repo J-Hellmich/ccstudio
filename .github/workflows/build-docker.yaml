@@ -4,7 +4,11 @@ permissions:
   actions: write
   contents: write
   issues: write
+  packages: write
   pull-requests: write
+  # This is used to complete the identity challenge
+  # with sigstore/fulcio when running outside of PRs.
+  id-token: write
 
 on:
   push:
@@ -44,6 +48,11 @@ jobs:
   linux_docker:
     needs: matrix_pre
     runs-on: ubuntu-latest
+    timeout-minutes: 600
+    strategy:
+      matrix:
+        # run 3 ubuntu-latest jobs for building different CCStudio versions
+        os: [20.04, 22.04, 24.04]
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
@@ -66,17 +75,32 @@ jobs:
         username: whuzfb
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # uses: docker/build-push-action@v6
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Build and push Docker image
       run: |
-        sed -i 's|docker build|docker buildx build --sbom=true --provenance=mode=max --push|g' Makefile
+        echo "Replacing UBUNTU_VERSIONS with ${{ matrix.os }}"
+        sed -Ei 's/^UBUNTU_VERSIONS[[:space:]]*:=[[:space:]]*.*/UBUNTU_VERSIONS := ${{ matrix.os }}/' Makefile
+        sed -i 's|docker build|docker buildx build --sbom=true --provenance=mode=max --push -t ghcr.io/${{ github.repository }}:$(3)-ubuntu$(1)$(TAG_SUFFIX)|g' Makefile
+        cat Makefile
         make all
         echo "Build docker image without mmWave SDK"
         sed -i 's|03.06.02.00-LTS||g' Makefile
+        cat Makefile
         make all
 
     - name: Build latest image
+      if: matrix.os == '24.04'
       run: |
-        docker pull whuzfb/ccstudio:20.2-ubuntu24.04-mmw
-        docker tag whuzfb/ccstudio:20.2-ubuntu24.04-mmw whuzfb/ccstudio:latest
+        export latest_tag="20.2-ubuntu24.04-mmw"
+        docker pull whuzfb/ccstudio:${latest_tag}
+        docker tag whuzfb/ccstudio:${latest_tag} whuzfb/ccstudio:latest
         docker push whuzfb/ccstudio:latest
+        docker pull ghcr.io/${{ github.repository }}:${latest_tag}
+        docker tag ghcr.io/${{ github.repository }}:${latest_tag} ghcr.io/${{ github.repository }}:latest
+        docker push ghcr.io/${{ github.repository }}:latest
