@@ -27,13 +27,14 @@ ENV WORKSPACE_DIR="/workspaces"
 ENV LANG=en_US.UTF-8 TZ=UTC
 
 COPY configure.sh entrypoint.sh /
-RUN chmod +x /*.sh
 
-RUN /configure.sh install_base
-RUN /configure.sh install_ccs
-RUN /configure.sh install_mmwave_sdk
-RUN /configure.sh install_sys_bios
-RUN /configure.sh init_ccs && /configure.sh clean
+# use only one RUN command to reduce image layers
+RUN chmod +x /*.sh && \
+    /configure.sh install_base && \
+    /configure.sh install_ccs && \
+    /configure.sh install_mmwave_sdk && \
+    /configure.sh install_sys_bios && \
+    /configure.sh init_ccs && /configure.sh clean
 
 WORKDIR ${WORKSPACE_DIR}
 ENV PATH="${CCS_DIR}/ccs/eclipse/:${PATH}"

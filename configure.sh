@@ -71,13 +71,14 @@ install_base() {
     dpkg --add-architecture i386
 
     apt-get update
-    apt-get install --no-install-recommends -y ${PKGS} build-essential unzip wget gnupg
+    apt-get install --no-install-recommends -y ${PKGS} build-essential unzip wget gnupg curl git
     ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
     # add-apt-repository ppa:deadsnakes/ppa -y
     # add deadsnakes PPA
     echo "deb http://ppa.launchpad.net/deadsnakes/ppa/ubuntu ${UBUNTU_CODENAME} main" | tee /etc/apt/sources.list.d/deadsnakes-ppa.list
     # import PPA public key
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F23C5A6CF475977595C89F51BA6932366A755776
+    # apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F23C5A6CF475977595C89F51BA6932366A755776
+    curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xBA6932366A755776" | gpg --dearmor -o /etc/apt/trusted.gpg.d/deadsnakes.gpg
     apt-get update
     local deb_url="http://mirrors.edge.kernel.org/ubuntu/pool/universe"
     # cCS version below 20 requires Python 2.7
