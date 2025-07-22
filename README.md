@@ -5,7 +5,10 @@ Docker images are available on:
 * [Dockerhub: whuzfb/ccstudio](https://hub.docker.com/r/whuzfb/ccstudio)
 * [GHCR: zfb132/ccstudio](https://github.com/zfb132/ccstudio/pkgs/container/ccstudio)
 
-### Software Configuration  
+Github Actions workflow: [zfb132/build-ccstudio-project](https://github.com/marketplace/actions/build-ccstudio-project)  
+Repository for testing: [zfb132/mmw_oob](https://github.com/zfb132/mmw_oob)
+
+### Software Configuration
 1. **Supported CCStudio versions**:
    - 10.x (tested versions `10.0.0.00010`, `10.4.0.00006`)
    - 11.x (tested versions `11.0.0.00012`, `11.2.0.00007`)
@@ -134,6 +137,36 @@ List of installable product families (see CLI installer reference [here](https:/
 | PF_C64MC          | C64x multicore DSP                                                           | windows-x64, linux-x64      |
 | PF_DIGITAL_POWER  | UCD Digital Power Controllers                                                | windows-x64, linux-x64      |
 
+
+## Prebuilt Docker Images
+The build configurations for prebuilt Docker images are defined in the following table:  
+
+|       Docker Tag       | Ubuntu Version |   CCS Version     | CCS Components | mmWave SDK Version | mmWave SDK Components | SYS/BIOS Version |
+|         :---:          |      :---:     |       :---:       |      :---:     |       :---:        |         :---:         |      :---:       |
+| `20.2-ubuntu24.04-mmw` | `24.04`        | `20.2.0.00012`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `20.2-ubuntu24.04`     | `24.04`        | `20.2.0.00012`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `20.2-ubuntu22.04-mmw` | `22.04`        | `20.2.0.00012`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `20.2-ubuntu22.04`     | `22.04`        | `20.2.0.00012`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `20.2-ubuntu20.04-mmw` | `20.04`        | `20.2.0.00012`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `20.2-ubuntu20.04`     | `20.04`        | `20.2.0.00012`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `12.8-ubuntu24.04-mmw` | `24.04`        | `12.8.1.00005`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `12.8-ubuntu24.04`     | `24.04`        | `12.8.1.00005`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `12.8-ubuntu22.04-mmw` | `22.04`        | `12.8.1.00005`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `12.8-ubuntu22.04`     | `22.04`        | `12.8.1.00005`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `12.8-ubuntu20.04-mmw` | `20.04`        | `12.8.1.00005`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `12.8-ubuntu20.04`     | `20.04`        | `12.8.1.00005`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `11.2-ubuntu24.04-mmw` | `24.04`        | `11.2.0.00007`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `11.2-ubuntu24.04`     | `24.04`        | `11.2.0.00007`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `11.2-ubuntu22.04-mmw` | `22.04`        | `11.2.0.00007`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `11.2-ubuntu22.04`     | `22.04`        | `11.2.0.00007`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `11.2-ubuntu20.04-mmw` | `20.04`        | `11.2.0.00007`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `11.2-ubuntu20.04`     | `20.04`        | `11.2.0.00007`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `10.4-ubuntu24.04-mmw` | `24.04`        | `10.4.0.00006`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `10.4-ubuntu24.04`     | `24.04`        | `10.4.0.00006`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `10.4-ubuntu22.04-mmw` | `22.04`        | `10.4.0.00006`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `10.4-ubuntu22.04`     | `22.04`        | `10.4.0.00006`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `10.4-ubuntu20.04-mmw` | `20.04`        | `10.4.0.00006`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `10.4-ubuntu20.04`     | `20.04`        | `10.4.0.00006`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
 
 ## References
 

@@ -3,7 +3,10 @@ Docker镜像可在以下位置获取：
 * [Dockerhub: whuzfb/ccstudio](https://hub.docker.com/r/whuzfb/ccstudio)
 * [GHCR: zfb132/ccstudio](https://github.com/zfb132/ccstudio/pkgs/container/ccstudio)
 
-### 软件配置情况：  
+Github Actions工作流： [zfb132/build-ccstudio-project](https://github.com/marketplace/actions/build-ccstudio-project)  
+测试仓库： [zfb132/mmw_oob](https://github.com/zfb132/mmw_oob)
+
+### 软件配置情况
 1. 该仓库目前理论上支持的[CCStudio](https://www.ti.com/tool/CCSTUDIO)版本：  
   * 10.x（已测试版本`10.0.0.00010`、`10.4.0.00006`）
   * 11.x（已测试版本`11.0.0.00012`、`11.2.0.00007`）
@@ -131,6 +134,35 @@ docker run \
 | PF_C64MC          | C64x multicore DSP                                                           | windows-x64, linux-x64      |
 | PF_DIGITAL_POWER  | UCD Digital Power Controllers                                                | windows-x64, linux-x64      |
 
+## 预编译镜像
+Docker镜像的编译配置如下表所示：  
+
+|       Docker Tag       | Ubuntu Version |   CCS Version     | CCS Components | mmWave SDK Version | mmWave SDK Components | SYS/BIOS Version |
+|         :---:          |      :---:     |       :---:       |      :---:     |       :---:        |         :---:         |      :---:       |
+| `20.2-ubuntu24.04-mmw` | `24.04`        | `20.2.0.00012`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `20.2-ubuntu24.04`     | `24.04`        | `20.2.0.00012`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `20.2-ubuntu22.04-mmw` | `22.04`        | `20.2.0.00012`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `20.2-ubuntu22.04`     | `22.04`        | `20.2.0.00012`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `20.2-ubuntu20.04-mmw` | `20.04`        | `20.2.0.00012`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `20.2-ubuntu20.04`     | `20.04`        | `20.2.0.00012`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `12.8-ubuntu24.04-mmw` | `24.04`        | `12.8.1.00005`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `12.8-ubuntu24.04`     | `24.04`        | `12.8.1.00005`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `12.8-ubuntu22.04-mmw` | `22.04`        | `12.8.1.00005`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `12.8-ubuntu22.04`     | `22.04`        | `12.8.1.00005`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `12.8-ubuntu20.04-mmw` | `20.04`        | `12.8.1.00005`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `12.8-ubuntu20.04`     | `20.04`        | `12.8.1.00005`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `11.2-ubuntu24.04-mmw` | `24.04`        | `11.2.0.00007`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `11.2-ubuntu24.04`     | `24.04`        | `11.2.0.00007`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `11.2-ubuntu22.04-mmw` | `22.04`        | `11.2.0.00007`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `11.2-ubuntu22.04`     | `22.04`        | `11.2.0.00007`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `11.2-ubuntu20.04-mmw` | `20.04`        | `11.2.0.00007`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `11.2-ubuntu20.04`     | `20.04`        | `11.2.0.00007`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `10.4-ubuntu24.04-mmw` | `24.04`        | `10.4.0.00006`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `10.4-ubuntu24.04`     | `24.04`        | `10.4.0.00006`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `10.4-ubuntu22.04-mmw` | `22.04`        | `10.4.0.00006`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `10.4-ubuntu22.04`     | `22.04`        | `10.4.0.00006`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
+| `10.4-ubuntu20.04-mmw` | `20.04`        | `10.4.0.00006`    | `PF_ALL`       | `03.06.02.00-LTS`  | `ALL`                 | `""` (skip)      |
+| `10.4-ubuntu20.04`     | `20.04`        | `10.4.0.00006`    | `PF_ALL`       | `""` (skip)        | `ALL`                 | `""` (skip)      |
 
 ## 参考
 * [uoohyo/ccstudio-ide](https://github.com/uoohyo/docker-ccstudio-ide)
