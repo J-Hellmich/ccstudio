@@ -34,6 +34,25 @@ Command-line interface documentation
 - [CCS Command Line Interface (v12 and below)](https://software-dl.ti.com/ccs/esd/documents/ccs_projects-command-line.html)  
 - [CCS Command Line Interface (v20 and above)](https://software-dl.ti.com/ccs/esd/documents/users_guide/ccs_project-command-line.html)  
 
+## Running the GUI via X11
+To launch the CCS IDE GUI from inside the container while keeping your host clean, use X11 forwarding:
+
+```bash
+# Allow local docker access to your X server (temporary)
+xhost +local:docker
+
+# Run the helper script (build or pull the image first)
+scripts/run_x11.sh whuzfb/ccstudio:latest "$HOME/ccs-workspace"
+
+# CCS will start in the container and use /workspaces as the workspace.
+# On exit, the script revokes X access.
+```
+
+Notes:
+- Requires an X server on the host and `xhost` utility (`sudo apt install x11-xserver-utils`).
+- You can mount a local `./ccs_projects` folder; the script auto-binds it to `/ccs_projects` for optional CLI builds.
+- For Wayland-only environments, ensure Xwayland is available or consider adding a VNC-based desktop layer.
+
 ## Building the Docker Images
 ### Automatic Build
 Use `make` to build images:  
@@ -83,6 +102,82 @@ docker build -t ${tag} . \
   --build-arg "MMWSDK_VERSION=${MMWSDK_VERSION}" \
   --build-arg "MMWSDK_COMPONENTS=${MMWSDK_COMPONENTS}" \
   --build-arg "BIOS_VERSION=${BIOS_VERSION}"
+```
+
+### Using a Local CCS Installer
+If you already downloaded the CCS installer (e.g., `CCS12.8.1.00005_linux-x64.tar.gz`), place it in `assets/`. The build copies files from `assets/` to `/ccs_install` in the image, and `configure.sh` will use the local file and skip downloading.
+
+```bash
+mkdir -p assets
+cp ~/Downloads/CCS12.8.1.00005_linux-x64.tar.gz assets/
+make 12.8-ubuntu24.04
+```
+
+### GUI-Ready Image (X11)
+If you want a GUI-ready image, enable GUI dependencies:
+
+```bash
+# Build standard image with GUI deps enabled
+GUI_DEPS=1 make 12.8-ubuntu24.04
+
+# Or build a dedicated GUI-tagged image
+make 12.8-ubuntu24.04-gui
+
+# Launch via helper
+xhost +local:docker
+make run-x11-gui
+
+# Pass custom directories via environment (optional)
+#   WORKSPACE_DIR: host path for CCS workspace (default $HOME/ccs-workspace)
+#   PROJECTS_DIR: host path to mount as /ccs_projects (optional)
+# Example:
+# WORKSPACE_DIR="$HOME/dev/ccs-workspace" PROJECTS_DIR="$HOME/dev/ccs-projects" make run-x11-gui
+```
+
+### Plain Docker Commands (no make)
+If you prefer not to use `make`, here are the equivalent steps and commands that the helper script runs to start the CCS GUI via X11. Adjust the image tag and workspace path as needed.
+
+```bash
+# 1) Allow local docker to access your X server for this session
+xhost +local:docker
+
+# 2) Ensure a workspace directory exists on the host
+WORKSPACE_DIR="$HOME/ccs-workspace"
+mkdir -p "$WORKSPACE_DIR"
+
+# 3) Run the GUI-enabled image with X11 bindings
+#    Use the GUI image built by `make 12.8-ubuntu24.04-gui`
+IMAGE_TAG="ccstudio:12.8-ubuntu24.04-gui"
+
+docker run --rm -it \
+  --name ccs-x11 \
+  -e DISPLAY="$DISPLAY" \
+  -e QT_X11_NO_MITSHM=1 \
+  -e TZ="${TZ:-Etc/UTC}" \
+  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+  -v "$WORKSPACE_DIR":/workspaces \
+  -v "$CCS_PROJECTS_DIR":/ccs_projects \
+  --entrypoint "" \
+  "$IMAGE_TAG" bash -lc \
+  "/opt/ti/ccs/eclipse/ccstudio -data /workspaces"
+
+# Optional: mount local projects if present
+# If you have a ./ccs_projects folder, add:
+#   -v "$(pwd)/ccs_projects:/ccs_projects" \
+
+# 4) After CCS exits, you can revoke X access (optional best-effort)
+xhost -local:docker
+```
+
+### Enter the Running Container
+To open a shell inside the running CCS container:
+
+```bash
+# Enter the default X11-run container
+scripts/enter_container.sh
+
+# Or specify a different container name
+scripts/enter_container.sh ccstudio
 ```
 
 ## Running the Container

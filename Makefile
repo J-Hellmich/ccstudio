@@ -1,3 +1,58 @@
+# Build CCStudio 12.8 on Ubuntu 24.04
+.PHONY: 12.8-ubuntu24.04
+12.8-ubuntu24.04:
+	# You can override components via env: CCS_COMPONENTS, MMWSDK_VERSION, MMWSDK_COMPONENTS, BIOS_VERSION
+	# Defaults: install all CCS components, no mmWave SDK, no SYS/BIOS
+	@echo "Building ccstudio:12.8-ubuntu24.04..."
+	$(eval UBUNTU_VERSION := 24.04)
+	$(eval CCSTUDIO_VERSION := 12.8.1.00005)
+	$(eval CCS_VERSION_SHORT := 12.8)
+	$(eval CCS_COMPONENTS := $(or ${CCS_COMPONENTS},PF_ALL))
+	# Explicitly disable mmWave SDK by default
+	$(eval MMWSDK_VERSION := )
+	$(eval MMWSDK_COMPONENTS := )
+	# Enable SYS/BIOS by default (tested 6.73.01.01)
+	$(eval BIOS_VERSION := $(or ${BIOS_VERSION},6.73.01.01))
+	$(eval tag := ccstudio:$(CCS_VERSION_SHORT)-ubuntu$(UBUNTU_VERSION))
+	docker build -t $(tag) . \
+ 		--build-arg "OS_VERSION=$(UBUNTU_VERSION)" \
+ 		--build-arg "CCS_VERSION=$(CCSTUDIO_VERSION)" \
+ 		--build-arg "CCS_COMPONENTS=$(CCS_COMPONENTS)" \
+ 		--build-arg "MMWSDK_VERSION=$(MMWSDK_VERSION)" \
+ 		--build-arg "MMWSDK_COMPONENTS=$(MMWSDK_COMPONENTS)" \
+		--build-arg "BIOS_VERSION=$(BIOS_VERSION)" \
+		--build-arg "GUI_DEPS=$(or ${GUI_DEPS},0)"
+
+.PHONY: 12.8-ubuntu24.04-gui
+12.8-ubuntu24.04-gui:
+	@echo "Building ccstudio:12.8-ubuntu24.04-gui (GUI deps enabled)..."
+	$(eval UBUNTU_VERSION := 24.04)
+	$(eval CCSTUDIO_VERSION := 12.8.1.00005)
+	$(eval CCS_VERSION_SHORT := 12.8)
+	$(eval CCS_COMPONENTS := $(or ${CCS_COMPONENTS},PF_ALL))
+	$(eval BIOS_VERSION := $(or ${BIOS_VERSION},6.73.01.01))
+	$(eval tag := ccstudio:$(CCS_VERSION_SHORT)-ubuntu$(UBUNTU_VERSION)-gui)
+	docker build -t $(tag) . \
+		--build-arg "OS_VERSION=$(UBUNTU_VERSION)" \
+		--build-arg "CCS_VERSION=$(CCSTUDIO_VERSION)" \
+		--build-arg "CCS_COMPONENTS=$(CCS_COMPONENTS)" \
+		--build-arg "MMWSDK_VERSION=" \
+		--build-arg "MMWSDK_COMPONENTS=" \
+		--build-arg "BIOS_VERSION=$(BIOS_VERSION)" \
+		--build-arg "GUI_DEPS=1"
+
+.PHONY: run-x11-gui
+run-x11-gui:
+	@echo "Launching CCS GUI via X11 (GUI image)..."
+	# Accept WORKSPACE_DIR and PROJECTS_DIR from environment; fallback to defaults
+	bash scripts/run_x11.sh ccstudio:12.8-ubuntu24.04-gui "$(or ${WORKSPACE_DIR},$(HOME)/ccs-workspace)" "${PROJECTS_DIR}" "${PRODUCTS_DIR}"
+
+.PHONY: run-x11
+run-x11:
+	@echo "Launching CCS GUI via X11..."
+	# Accept WORKSPACE_DIR and PROJECTS_DIR from environment; fallback to defaults
+	bash scripts/run_x11.sh ccstudio:12.8-ubuntu24.04 "$(or ${WORKSPACE_DIR},$(HOME)/ccs-workspace)" "${PROJECTS_DIR}" "${PRODUCTS_DIR}"
+
 # ==== Configuration ====
 DOCKER_REPO := whuzfb/ccstudio
 

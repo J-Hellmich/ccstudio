@@ -16,6 +16,8 @@ ARG MMWSDK_COMPONENTS="ALL"
 # SYS/BIOS version (empty to skip, note: already included in mmWave SDK)
 # e.g. 6.73.01.01
 ARG BIOS_VERSION=""
+# install GUI dependencies (set to 1 to enable)
+ARG GUI_DEPS="0"
 ARG DEBIAN_FRONTEND=noninteractive
 
 # default installation paths for TI tools (CCStudio, MMWave SDK, SYS/BIOS)
@@ -25,12 +27,17 @@ ENV WORKSPACE_DIR="/workspaces"
 # default language and timezone
 # timezone can be changed when running the container with -e TZ=...
 ENV LANG=en_US.UTF-8 TZ=UTC
+ENV GUI_DEPS=${GUI_DEPS}
 
 COPY configure.sh entrypoint.sh /
+# If a local CCS installer is provided, place it where configure.sh looks
+# (e.g., assets/CCS12.8.1.00005_linux-x64.tar.gz)
+COPY assets/ /ccs_install/
 
 # use only one RUN command to reduce image layers
 RUN chmod +x /*.sh && \
     /configure.sh install_base && \
+    /configure.sh install_gui_deps && \
     /configure.sh install_ccs && \
     /configure.sh install_mmwave_sdk && \
     /configure.sh install_sys_bios && \

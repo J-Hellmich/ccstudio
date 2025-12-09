@@ -1,4 +1,6 @@
-[Dd]ebug/
+# Ignore installer binaries and archives placed in assets/
+assets/*.run
+assets/*.tar.gz[Dd]ebug/
 [Rr]elease/
 [Bb]uild/
 [Bb]uilds/

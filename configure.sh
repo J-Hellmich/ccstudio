@@ -71,7 +71,11 @@ install_base() {
     dpkg --add-architecture i386
 
     apt-get update
-    apt-get install --no-install-recommends -y ${PKGS} build-essential unzip wget gnupg curl git
+    apt-get install --no-install-recommends -y ${PKGS} build-essential unzip wget gnupg curl git apt-utils locales python3 python3-pip
+    # generate and set locale to avoid Perl locale warnings
+    sed -i 's/^# *en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen || true
+    locale-gen en_US.UTF-8 || true
+    update-locale LANG=en_US.UTF-8 || true
     ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
     # add-apt-repository ppa:deadsnakes/ppa -y
     # add deadsnakes PPA
@@ -97,6 +101,8 @@ install_base() {
         fi
     else
         apt-get install --no-install-recommends -y libpython3.9
+        # ensure python3 interpreter is present
+        apt-get install --no-install-recommends -y python3 python3-pip
     fi
 
     # ubuntu 24.04 or above manually install libtinfo5 and libgconf-2-4
@@ -110,6 +116,26 @@ install_base() {
     fi
 }
 
+install_gui_deps() {
+    if [ "${GUI_DEPS}" != "1" ]; then
+        echo "GUI dependencies disabled (set GUI_DEPS=1 to enable)."
+        return
+    fi
+    echo "Installing GUI/X11 runtime dependencies for CCS..."
+    apt-get update
+    apt-get install --no-install-recommends -y \
+      libgtk-3-0 \
+      libxext6 libxrender1 libxi6 libxtst6 libxcomposite1 \
+      libxdamage1 libxfixes3 libxcursor1 libxrandr2 \
+      libasound2t64 \
+      libgl1 libglu1-mesa \
+      libnss3 ca-certificates \
+      fonts-dejavu-core \
+      adwaita-icon-theme \
+      libcanberra-gtk3-0 \
+      x11-utils
+}
+
 
 download_ccs() {
     mkdir -p ${TMP_DIR}
@@ -118,21 +144,33 @@ download_ccs() {
     if [ "${MAJOR_VER}" -ge 20 ]; then
         filename="CCS_${CCS_VERSION}_linux.zip"
         url="${CCS_URL}/${MAJOR_VER}.${MINOR_VER}.${PATCH_VER}/${filename}"
-        [ ! -f "${filename}" ] && wget -c --no-check-certificate "${url}" -O "${filename}"
+        if [ ! -f "${filename}" ]; then
+            wget -c --no-check-certificate "${url}" -O "${filename}"
+        else
+            echo "Using local CCS installer: ${TMP_DIR}/${filename}"
+        fi
         unzip -q "${filename}"
         chmod -R 755 "CCS_${CCS_VERSION}_linux"
 
     elif [ "${MAJOR_VER}" -eq 12 ]; then
         filename="CCS${CCS_VERSION}_linux-x64.tar.gz"
         url="${CCS_URL}/${MAJOR_VER}.${MINOR_VER}.${PATCH_VER}/${filename}"
-        [ ! -f "${filename}" ] && wget -c --no-check-certificate "${url}" -O "${filename}"
+        if [ ! -f "${filename}" ]; then
+            wget -c --no-check-certificate "${url}" -O "${filename}"
+        else
+            echo "Using local CCS installer: ${TMP_DIR}/${filename}"
+        fi
         tar -zxf "${filename}"
         chmod -R 755 "CCS${CCS_VERSION}_linux-x64"
 
     elif [ "${MAJOR_VER}" -lt 12 ]; then
         filename="CCS${CCS_VERSION}_linux-x64.tar.gz"
         url="${CCS_URL}/${CCS_VERSION}/${filename}"
-        [ ! -f "${filename}" ] && wget -c --no-check-certificate "${url}" -O "${filename}"
+        if [ ! -f "${filename}" ]; then
+            wget -c --no-check-certificate "${url}" -O "${filename}"
+        else
+            echo "Using local CCS installer: ${TMP_DIR}/${filename}"
+        fi
         tar -zxf "${filename}"
         chmod -R 755 "CCS${CCS_VERSION}_linux-x64"
     fi
@@ -195,7 +233,11 @@ install_sys_bios() {
     BIOS_VERSION="${BIOS_VERSION//./_}"
     url="${SYS_BIOS_URL}/${BIOS_VERSION}/exports/bios_${BIOS_VERSION}.run"
     filename="${TMP_DIR}/bios_${BIOS_VERSION}.run"
-    [ ! -f "${filename}" ] && wget -c --no-check-certificate "${url}" -O "${filename}"
+    if [ ! -f "${filename}" ]; then
+        wget -c --no-check-certificate "${url}" -O "${filename}"
+    else
+        echo "Using local SYS/BIOS installer: ${filename}"
+    fi
     chmod +x "${filename}"
     # "${filename}" --mode unattended --prefix "${CCS_DIR}"
     if "${filename}" --mode unattended --prefix "${CCS_DIR}"; then
